@@ -77,3 +77,4 @@ upgrade-impact/.local-output/
 
 /npm/bin
 __pycache__
+.direnv
