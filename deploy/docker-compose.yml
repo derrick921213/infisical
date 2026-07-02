@@ -33,8 +33,21 @@ services:
       - "80:8080"
     environment:
       - NODE_ENV=production
+      # --- License settings (這裡的值優先於 .env，不可更動) ---
+      # 使用 on-prem online key 格式（非 infisical_lk_ 開頭 → LicenseType.Online）
       - LICENSE_KEY=MOCK-LICENSE-KEY
+      # 所有 license HTTP 請求都導向 mock server，永不接觸官方
       - LICENSE_SERVER_URL=http://mock-license:3001
+      # 以下三個明確清空，防止 .env 殘留值觸發 Cloud / V2 路徑
+      - LICENSE_SERVER_KEY=
+      - LICENSE_SERVER_V2_SERVICE_KEY=
+      - LICENSE_SERVER_V2_URL=
+      # V2 mode 鎖定 off，licenseClient backend = null（永不建立 v2 連線）
+      - LICENSE_SERVER_V2_MODE=off
+    extra_hosts:
+      # 把官方 license server 指向 127.0.0.2（blackhole），雙重保險
+      - "portal.infisical.com:127.0.0.2"
+      - "license.infisical.com:127.0.0.2"
     networks:
       - infisical
 
